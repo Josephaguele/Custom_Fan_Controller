@@ -23,8 +23,8 @@
 
     <com.josephagu.customfancontroller.DialView
         android:id="@+id/dialView"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="240dp"
+        android:layout_height="260dp"
         app:fanColor1="#FFEB3B"
         app:fanColor2="#CDDC39"
         app:fanColor3="#009688"

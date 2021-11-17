@@ -110,7 +110,7 @@ class DialView @JvmOverloads constructor(
         super.onDraw(canvas)
         //Inside onDraw() add this line to set the paint color to gray (Color.GRAY) or
         // green (Color.GREEN) depending on whether the fan speed is OFF or any other value
-        
+
         // set the dial color based on the current fan speed
         paint.color = when (fanSpeed) {
             FanSpeed.OFF -> Color.GRAY
