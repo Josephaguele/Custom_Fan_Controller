@@ -14,6 +14,15 @@ private enum class FanSpeed(val label: Int) {
     LOW(R.string.fan_low),
     MEDIUM(R.string.fan_medium),
     HIGH(R.string.fan_high);
+
+    // an extension function next() that changes the current fan speed to the next speed in the list
+    // (from OFF to LOW, MEDIUM, and HIGH, and then back to OFF).
+    fun next() = when (this) {
+        OFF -> LOW
+        LOW -> MEDIUM
+        MEDIUM -> HIGH
+        HIGH -> OFF
+    }
 }
 
 private const val RADIUS_OFFSET_LABEL = 30
@@ -39,6 +48,23 @@ class DialView @JvmOverloads constructor(
         textAlign = Paint.Align.CENTER
         textSize = 55.0f
         typeface = Typeface.create( "", Typeface.BOLD)
+    }
+
+    //Setting the view's isClickable property to true enables that view to accept user input.
+    init {
+        isClickable = true
+    }
+
+    //The performClick() method calls onClickListener(). If you override performClick(),
+    // another contributor can still override onClickListener()
+    override fun performClick(): Boolean {
+        if (super.performClick()) return true
+
+        fanSpeed = fanSpeed.next()
+        contentDescription = resources.getString(fanSpeed.label)
+
+        invalidate()
+        return true
     }
 
     //to calculate the size for the custom view's dial.
