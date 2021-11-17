@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
+import androidx.core.content.withStyledAttributes
 import kotlin.math.cos
 import kotlin.math.min
 import kotlin.math.sin
@@ -42,6 +43,7 @@ class DialView @JvmOverloads constructor(
     // position variable which will be used to draw label and indicator circle position
     private val pointPosition: PointF = PointF(0.0f, 0.0f)
 
+
     // Initialization of a paint object with a handful of basic styles.
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL
@@ -50,9 +52,28 @@ class DialView @JvmOverloads constructor(
         typeface = Typeface.create( "", Typeface.BOLD)
     }
 
+    //In order to use the attributes, you need to retrieve them. They are stored in an AttributeSet,
+    //that is handed to your class upon creation, if it exists. You retrieve the attributes in init,
+    // and then you assign the attribute values to local variables for caching.
+    //
+    // declare variables to cache the attribute values.
+    private var fanSpeedLowColor = 0
+    private var fanSpeedMediumColor = 0
+    private var fanSeedMaxColor = 0
+
+
     //Setting the view's isClickable property to true enables that view to accept user input.
     init {
         isClickable = true
+
+        //In the init block, add the following code using the withStyledAttributes extension function.
+        // You supply the attributes and view, and and set your local variables.
+        context.withStyledAttributes(attrs, R.styleable.DialView) {
+            fanSpeedLowColor = getColor(R.styleable.DialView_fanColor1, 0)
+            fanSpeedMediumColor = getColor(R.styleable.DialView_fanColor2, 0)
+            fanSeedMaxColor = getColor(R.styleable.DialView_fanColor3, 0)
+        }
+
     }
 
     //The performClick() method calls onClickListener(). If you override performClick(),
@@ -66,6 +87,7 @@ class DialView @JvmOverloads constructor(
         invalidate()
         return true
     }
+
 
     //to calculate the size for the custom view's dial.
     override fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int) {
@@ -88,9 +110,14 @@ class DialView @JvmOverloads constructor(
         super.onDraw(canvas)
         //Inside onDraw() add this line to set the paint color to gray (Color.GRAY) or
         // green (Color.GREEN) depending on whether the fan speed is OFF or any other value
-
-        //Set dial background color to green if selection not off.
-        paint.color = if (fanSpeed == FanSpeed.OFF) Color.GRAY else Color.GREEN
+        
+        // set the dial color based on the current fan speed
+        paint.color = when (fanSpeed) {
+            FanSpeed.OFF -> Color.GRAY
+            FanSpeed.LOW -> fanSpeedLowColor
+            FanSpeed.MEDIUM -> fanSpeedMediumColor
+            FanSpeed.HIGH -> fanSeedMaxColor
+        } as Int
         //Draw a circle for the dial*/.
         canvas.drawCircle((width / 2).toFloat(), (height / 2).toFloat(), radius, paint)
 
@@ -115,6 +142,7 @@ class DialView @JvmOverloads constructor(
             val label = resources.getString(i.label)
             canvas.drawText(label, pointPosition.x, pointPosition.y, paint)
         }
+
     }
 
 }
